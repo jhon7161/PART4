@@ -1,0 +1,56 @@
+GET http://localhost:3003/api/blogs/
+
+###
+GET http://localhost:3001//api/blogs/lk
+
+###
+POST http://api/blogs/ HTTP/1.1
+content-type: application/json
+
+{
+  "title": "cartaaDIOS",
+  "author": "BOTERO",
+  "url": "http://CIELOURRL.com",
+  "likes": 100
+}
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Nuevo Blog",
+  "author": "Autor del Blog",
+  "url": "http://www.ejemplo.com",
+  "likes": 10
+}
+
+###
+PUT http://localhost:3003//api/blogs/
+content-type: application/json
+
+{
+    "name": "maeimar",
+    "number": 1122647161
+} 
+
+
+
+
+###
+DELETE http://localhost:3003//api/blogs/
+
+
+###
+
+
+
+
+
+
+
+
+
+
+
+
+
