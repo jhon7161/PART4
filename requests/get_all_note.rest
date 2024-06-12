@@ -16,12 +16,12 @@ content-type: application/json
 ###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NjkwOTE3NzJlZGY1Y2Q3YzRmZTI1MyIsImlhdCI6MTcxODE2MDczNH0.-oRlMSaVsPrHQ-HPGl5dUKNzBKbCnakrVSrM_Po010k
 
 {
-  "title": "Nuevo Blog",
-  "author": "Autor del Blog",
-  "url": "http://www.ejemplo.com",
-  "likes": 10
+  "title": "tokensito",
+  "url": "http://www.programas.com",
+  "likes": 10000,
 }
 
 ###
@@ -41,6 +41,58 @@ DELETE http://localhost:3003//api/blogs/
 
 
 ###
+
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "armando",
+  "name": "pedro",
+  "password": "leon"
+  
+}
+###
+GET http://localhost:3003/api/users
+Content-Type: application/json
+
+####
+DELETE http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "id": "66678377de3d7d4d952155a9"
+}
+###
+DELETE http://localhost:3003/api/users/6667868ca9d0077fc7c277b2
+Content-Type: application/json
+
+####
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "armando",
+  "password": "leon"
+  
+}
+####
+
+### Solicitud POST para crear una nueva entrada en el blog
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NjkwOTE3NzJlZGY1Y2Q3YzRmZTI1MyIsImlhdCI6MTcxODE5OTY4NH0.lLFnV-D6NKVb5STo2_iAJAl7mjdRy3e-9wy71tySk5M
+
+{
+  "title": "otropotr",
+  "author": "camilo",
+  "url": "http://www.programas.com",
+  "likes": 10000
+}
+
+
+
+
+
 
 
 
