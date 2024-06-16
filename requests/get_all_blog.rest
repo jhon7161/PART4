@@ -1,0 +1,71 @@
+GET http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NmU1NmNkZjJiYTAxZmZhNTJiODhjNCIsImlhdCI6MTcxODUwNzIyOX0.evuLlqApmUINz7LPa-DDFwVLPRl4dghoAVxJAthzZs0
+
+
+###
+PUT http://localhost:3003//api/blogs/
+content-type: application/json
+
+{
+    "name": "poema",
+    "number": 1122647161
+} 
+
+### Solicitud POST para crear una nueva entrada en el blog
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NmU2NTkyNTM4NWM0YTFkMGIwN2YzNyIsImlhdCI6MTcxODUxMTAwNH0.U3bk_waTEIz7eLr0Cl-e8tOKx2BhLVEJ3mSJmRCeEi0
+
+{
+  "title": "prubashoy",
+  "author": "laspruebas",
+  "url": "http://www.pruebas.com",
+  "likes": 10000
+}
+
+####
+DELETE http://localhost:3003/api/blogs/6669cd329e06c98c656c1fa3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NjkwOTE3NzJlZGY1Y2Q3YzRmZTI1MyIsImlhdCI6MTcxODIxMDQ4OX0.4n-voHbnDAl3f31nljMbh9mXXEQfW5Eeqc9NzbodihU
+####
+# Editar un blog existente
+PUT http://localhost:3003/api/blogs/666b16600bad5ee09c200e48
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NmU1NmNkZjJiYTAxZmZhNTJiODhjNCIsImlhdCI6MTcxODUwNzIyOX0.evuLlqApmUINz7LPa-DDFwVLPRl4dghoAVxJAthzZs0
+
+{
+  "title": "caminote",
+  "author": "caminote autor",
+  "url": "http://www.nuevaurl.com",
+  "likes": 15000
+}
+####
+DELETE http://localhost:3003/api/blogs/66678376de3d7d4d952155a4
+Content-Type: application/json
+####
+# Editar un blog existente
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "parapapapa",
+  "author": "josejose",
+  "url": "http://www.joseliro.com",
+  "likes": 10000
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,10 +1,10 @@
-const bcrypt = require('bcrypt')
-const usersRouter = require('express').Router()
-const User = require('../models/users')
+const bcrypt = require('bcrypt');
+const usersRouter = require('express').Router();
+const User = require('../models/users');
 
-
-usersRouter.post('/', async (request, response) => {
-  const { username, name, password } = request.body
+// POST /api/users - Crear un nuevo usuario
+usersRouter.post('/', async (request, response, next) => {
+  const { username, name, password } = request.body;
 
   // Verificación de longitud de contraseña
   if (!password || password.length < 3) {
@@ -12,55 +12,47 @@ usersRouter.post('/', async (request, response) => {
   }
 
   try {
-    // Validación del esquema de Mongoose
-    await User.validate({ username, name, passwordHash: password });
-
     // Verificación de unicidad del username
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return response.status(400).json({ error: 'Username must be unique' });
     }
 
-    const saltRounds = 10
-    const passwordHash = await bcrypt.hash(password, saltRounds)
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
 
     const user = new User({
       username,
       name,
       passwordHash,
-    })
+    });
 
-    const savedUser = await user.save()
-
-    response.status(201).json(savedUser)
+    const savedUser = await user.save();
+    response.status(201).json(savedUser);
   } catch (error) {
-    // Manejo de errores de validación del esquema
-    if (error.name === 'ValidationError') {
-      return response.status(400).json({ error: error.message });
-    } else {
-      response.status(500).json({ error: 'Something went wrong' });
-    }
+    next(error); // Pasar cualquier error al middleware de manejo de errores
   }
-})
+});
 
-usersRouter.get('/', async (request, response) => {
-  const users = await User
-  .find({}).populate('blogs', { title: 1, author: 1, url: 1,likes: 1 })
-  response.json(users)
-})
-
-
-
-
-usersRouter.delete('/:id', async (request, response) => {
-  const userId = request.params.id
-
+// GET /api/users - Obtener todos los usuarios
+usersRouter.get('/', async (request, response, next) => {
   try {
-    await User.findByIdAndDelete(userId)
-    response.status(204).end()
+    const users = await User.find({}).populate('blogs', { title: 1, author: 1, url: 1, likes: 1 });
+    response.json(users);
   } catch (error) {
-    response.status(400).json({ error: 'No se pudo eliminar el usuario' })
+    next(error); // Pasar cualquier error al middleware de manejo de errores
   }
-})
+});
 
-module.exports = usersRouter
+// DELETE /api/users/:id - Eliminar un usuario por ID
+usersRouter.delete('/:id', async (request, response, next) => {
+  try {
+    const userId = request.params.id;
+    await User.findByIdAndDelete(userId);
+    response.status(204).end();
+  } catch (error) {
+    next(error); // Pasar cualquier error al middleware de manejo de errores
+  }
+});
+
+module.exports = usersRouter;
