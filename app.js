@@ -11,6 +11,7 @@ const middleware = require('./utils/middleware');
 const blogsRouter = require('./controllers/bloggss');
 const usersRouter = require('./controllers/users');
 const loginRouter = require('./controllers/login');
+const testingRouter = require ('./controllers/testing')
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -36,16 +37,19 @@ app.use(morgan('tiny'));
 app.use(middleware.requestLogger);
 app.use(middleware.tokenExtractor);
 
-// Rutas
+// Rutas sin autenticación
 app.use('/api/login', loginRouter);
 app.use('/api/users', usersRouter);
 
-// Middleware específico para proteger rutas de blogs
-app.use(middleware.userExtractor);
-app.use('/api/blogs', blogsRouter);
-
 // Servir archivos estáticos del frontend
 app.use(express.static(distPath));
+
+// Rutas de blogs
+app.use('/api/blogs', blogsRouter);
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing');
+  app.use('/api/testing', testingRouter);
+}
 
 // Middleware para manejar endpoints desconocidos
 app.use(middleware.unknownEndpoint);

@@ -1,109 +1,110 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const middleware = require('../utils/middleware');
-const { tokenExtractor, userExtractor } = middleware;
 
-// Middleware para extraer el token de la solicitud
-blogsRouter.use(tokenExtractor);
-
-// Endpoint para obtener todos los blogs con información del usuario que los creó
-blogsRouter.get('/', async (req, res, next) => {
-  try {
-    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
-    res.json(blogs);
-  } catch (error) {
-    next(error);
-  }
+// Ruta GET pública
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+  response.json(blogs);
 });
 
-// Endpoint para obtener un blog específico por ID
-blogsRouter.get('/:id', async (req, res, next) => {
-  try {
-    const blog = await Blog.findById(req.params.id).populate('user', { username: 1, name: 1 });
-    if (blog) {
-      res.json(blog);
-    } else {
-      res.status(404).end();
-    }
-  } catch (error) {
-    next(error);
-  }
+// Rutas que requieren autenticación
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
+  const user = request.user;
+
+  const blog = new Blog({
+    ...request.body,
+    user: user._id
+  });
+
+  const savedBlog = await blog.save();
+  user.blogs = user.blogs.concat(savedBlog._id);
+  await user.save();
+
+  response.status(201).json(savedBlog);
 });
 
-// Endpoint para crear un nuevo blog
-blogsRouter.post('/', userExtractor, async (req, res, next) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
   try {
-    const body = req.body;
-    const user = req.user;
+    const user = request.user;
+    const blog = await Blog.findById(request.params.id);
 
-    const blog = new Blog({
-      title: body.title,
-      author: body.author,
-      url: body.url,
-      likes: body.likes || 0,
-      user: user._id
-    });
-
-    const savedBlog = await blog.save();
-    user.blogs = user.blogs.concat(savedBlog._id);
-    await user.save();
-    res.status(201).json(savedBlog);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Endpoint para actualizar un blog por ID
-blogsRouter.put('/:id', userExtractor, async (req, res, next) => {
-  try {
-    const body = req.body;
-    const user = req.user;
-
-    const blog = {
-      title: body.title,
-      author: body.author,
-      url: body.url,
-      likes: body.likes
-    };
-
-    const updatedBlog = await Blog.findById(req.params.id);
-    if (!updatedBlog) {
-      return res.status(404).json({ error: 'blog not found' });
-    }
-
-    // Verificar si el usuario es el autor del blog
-    if (updatedBlog.user.toString() !== user._id.toString()) {
-      return res.status(403).json({ error: 'unauthorized action' });
-    }
-
-    // Actualizar el blog
-    const result = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true });
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Endpoint para eliminar un blog por ID
-blogsRouter.delete('/:id', userExtractor, async (req, res, next) => {
-  try {
-    const user = req.user;
-
-    const blog = await Blog.findById(req.params.id);
     if (!blog) {
-      return res.status(404).json({ error: 'blog not found' });
+      return response.status(404).json({ error: 'Blog not found' });
     }
 
-    // Verificar si el usuario es el autor del blog
-    if (blog.user.toString() !== user._id.toString()) {
-      return res.status(403).json({ error: 'unauthorized action' });
+    if (blog.user.toString() !== user.id.toString()) {
+      return response.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Eliminar el blog
-    await Blog.findByIdAndDelete(req.params.id);
-    res.status(204).end();
+    await blog.deleteOne(); // or await Blog.findByIdAndDelete(request.params.id);
+
+    response.status(204).end();
   } catch (error) {
-    next(error);
+    console.error('Error deleting blog:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+blogsRouter.put('/:id/likes', middleware.userExtractor, async (request, response) => {
+  const blogId = request.params.id;
+  const user = request.user;
+
+  try {
+    const blogToUpdate = await Blog.findById(blogId);
+
+    if (!blogToUpdate) {
+      return response.status(404).json({ error: 'Blog not found' });
+    }
+
+    if (blogToUpdate.likedBy.includes(user._id)) {
+      // Dislike
+      blogToUpdate.likes -= 1;
+      blogToUpdate.likedBy = blogToUpdate.likedBy.filter(userId => userId.toString() !== user._id.toString());
+    } else {
+      // Like
+      blogToUpdate.likes += 1;
+      blogToUpdate.likedBy.push(user._id);
+    }
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      blogId,
+      blogToUpdate,
+      { new: true }
+    ).populate('user', { username: 1, name: 1 });
+
+    response.json(updatedBlog);
+  } catch (error) {
+    console.error('Error updating blog:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+blogsRouter.put('/:id', middleware.userExtractor, async (request, response) => {
+  const { title, author, url, likes } = request.body;
+  const blogId = request.params.id;
+  const user = request.user;
+
+  try {
+    const blogToUpdate = await Blog.findById(blogId);
+
+    if (!blogToUpdate) {
+      return response.status(404).json({ error: 'Blog not found' });
+    }
+
+    if (blogToUpdate.user.toString() !== user.id.toString()) {
+      return response.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      blogId,
+      { title, author, url, likes },
+      { new: true }
+    ).populate('user', { username: 1, name: 1 });
+
+    response.json(updatedBlog);
+  } catch (error) {
+    console.error('Error updating blog:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

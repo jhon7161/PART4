@@ -215,14 +215,19 @@ describe('POST /api/blogs', () => {
 
 describe('PUT /api/blogs/:id', () => {
   it('updates a blog', async () => {
+    // Obtener los blogs iniciales
     const blogsAtStart = await helper.blogsInDb();
     const blogToUpdate = blogsAtStart[0];
 
+    // Datos actualizados (incrementar likes)
     const updatedBlog = {
-      ...blogToUpdate,
-      likes: blogToUpdate.likes + 1,
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: blogToUpdate.likes + 1, // Incrementar los likes
     };
 
+    // Enviar solicitud PUT para actualizar el blog
     const response = await api
       .put(`/api/blogs/${blogToUpdate.id}`)
       .set('Authorization', `Bearer ${token}`)
@@ -230,7 +235,13 @@ describe('PUT /api/blogs/:id', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
+    // Verificar que los likes se hayan actualizado correctamente en la respuesta
     assert.strictEqual(response.body.likes, updatedBlog.likes);
+
+    // Verificar que los cambios se reflejan en la base de datos
+    const blogsAtEnd = await helper.blogsInDb();
+    const updatedBlogFromDb = blogsAtEnd.find(blog => blog.id === blogToUpdate.id);
+    assert.strictEqual(updatedBlogFromDb.likes, updatedBlog.likes);
   });
 });
 

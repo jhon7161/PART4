@@ -1,6 +1,6 @@
 GET http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NmU1NmNkZjJiYTAxZmZhNTJiODhjNCIsImlhdCI6MTcxODUwNzIyOX0.evuLlqApmUINz7LPa-DDFwVLPRl4dghoAVxJAthzZs0
+
 
 
 ###
@@ -15,30 +15,27 @@ content-type: application/json
 ### Solicitud POST para crear una nueva entrada en el blog
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NmU2NTkyNTM4NWM0YTFkMGIwN2YzNyIsImlhdCI6MTcxODUxMTAwNH0.U3bk_waTEIz7eLr0Cl-e8tOKx2BhLVEJ3mSJmRCeEi0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2OWZkYWEzNDViNzY5ZjU3N2JiYzYzNiIsImlhdCI6MTcyMTc1MjIzOH0.zO2Hd3jmQ3FLIhm-HyRdsMcNJ8AeqCt8x76jYajqT5c
 
 {
   "title": "prubashoy",
   "author": "laspruebas",
-  "url": "http://www.pruebas.com",
-  "likes": 10000
+  "url": "http://www.pruebas.com"
 }
 
 ####
-DELETE http://localhost:3003/api/blogs/6669cd329e06c98c656c1fa3
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NjkwOTE3NzJlZGY1Y2Q3YzRmZTI1MyIsImlhdCI6MTcxODIxMDQ4OX0.4n-voHbnDAl3f31nljMbh9mXXEQfW5Eeqc9NzbodihU
+DELETE http://localhost:3003/api/blogs/667374fb3e54d6399fb75c63
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NzM3NGJiM2U1NGQ2Mzk5ZmI3NWM1ZSIsImlhdCI6MTcxODg0MjU1OX0.TrmNUV6chToH50G7EHp2tlx4JuaKGa6Lmd0yYig9v3k
 ####
 # Editar un blog existente
-PUT http://localhost:3003/api/blogs/666b16600bad5ee09c200e48
+PUT http://localhost:3003/api/blogs/669fdad345b769f577bbc63a
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2NmU1NmNkZjJiYTAxZmZhNTJiODhjNCIsImlhdCI6MTcxODUwNzIyOX0.evuLlqApmUINz7LPa-DDFwVLPRl4dghoAVxJAthzZs0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFybWFuZG8iLCJpZCI6IjY2OWZkYWEzNDViNzY5ZjU3N2JiYzYzNiIsImlhdCI6MTcyMTc1MjIzOH0.zO2Hd3jmQ3FLIhm-HyRdsMcNJ8AeqCt8x76jYajqT5c
 
 {
   "title": "caminote",
   "author": "caminote autor",
-  "url": "http://www.nuevaurl.com",
-  "likes": 15000
+  "url": "http://www.nuevaurl.com"
 }
 ####
 DELETE http://localhost:3003/api/blogs/66678376de3d7d4d952155a4

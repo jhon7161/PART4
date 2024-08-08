@@ -24,29 +24,27 @@ const tokenExtractor = (request, response, next) => {
 };
 
 // Middleware para extraer el usuario basado en el token
-const userExtractor = async (request, response, next) => {
-  const token = request.token;
+const userExtractor = async (req, res, next) => {
+  const token = req.token
 
   if (token) {
     try {
-      const decodedToken = jwt.verify(token, process.env.SECRET);
-      if (decodedToken && decodedToken.id) {
-        const user = await User.findById(decodedToken.id);
-        if (user) {
-          request.user = user;
-        } else {
-          return response.status(401).json({ error: 'User not found' });
-        }
+      const decodedToken = jwt.verify(token, process.env.SECRET)
+      if (!decodedToken.id) {
+        return res.status(401).json({ error: 'token missing or invalid' })
       }
+
+      const user = await User.findById(decodedToken.id)
+      req.user = user
     } catch (error) {
-      return response.status(401).json({ error: 'Token invalid or missing' });
+      return res.status(401).json({ error: 'token invalid' })
     }
   } else {
-    return response.status(401).json({ error: 'Token invalid or missing' });
+    return res.status(401).json({ error: 'token missing' })
   }
 
-  next();
-};
+  next()
+}
 
 // Middleware para manejar rutas desconocidas
 const unknownEndpoint = (request, response) => {
